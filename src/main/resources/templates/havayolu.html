@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Havayolu Yönetimi</title>
+  <link href="https://unpkg.com/bootstrap@3.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+  <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>Yönetici Paneli</h3>
+      </div>
+
+      <ul class="list-unstyled components">
+        <li>
+          <a href="/havalimani">Havalimanı</a>
+        </li>
+        <li>
+          <a href="/havayolu">Havayolu</a>
+        </li>
+        <li>
+          <a href="/rota">Rota</a>
+        </li>
+        <li>
+          <a href="/ucus">Uçuş</a>
+        </li>
+        <li>
+          <a href="/rezervasyon">Rezervasyon</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content">
+      <main id="app">
+        <router-view></router-view>
+      </main>
+
+    </div>
+
+  </div>
+
+  <template id="havayolu">
+    <div>
+      <b>Uçuş Kodu: </b>
+      <h2>{{ havayolu.ucusKodu }}</h2>
+      <b>Adı: </b>
+      <div>{{ havayolu.adi }}</div>
+      <br/>
+      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+      <a>
+        <router-link to="/">Geri Dön</router-link>
+      </a>
+    </div>
+  </template>
+
+  <template id="havayolu-list">
+    <div>
+      <div class="actions">
+        <a class="btn btn-default">
+          <router-link :to="{path: '/havayolu-kaydet'}">
+            <span class="glyphicon glyphicon-plus"></span>
+            Havayolu Ekle
+          </router-link>
+        </a>
+      </div>
+      <div class="filters row">
+        <div class="form-group col-sm-3">
+          <input placeholder="Search" v-model="aramaAnahtari" class="form-control" id="search-element"
+                 requred/>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Kodu</th>
+          <th>Adı</th>
+          <th class="col-sm-2">İşlemler</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="havayolu in filtreleHavayolu">
+          <td>
+            <a>
+              <router-link :to="{name: 'havayolu', params: {havayolu_id: havayolu.id}}">{{
+                havayolu.ucusKodu }}
+              </router-link>
+            </a>
+          </td>
+          <td>{{ havayolu.adi }}</td>
+          <td>
+            <a class="btn btn-warning btn-xs">
+              <router-link :to="{name: 'havayolu-duzenle', params: {havayolu_id: havayolu.id}}">
+                Düzenle
+              </router-link>
+            </a>
+            <a class="btn btn-danger btn-xs">
+              <router-link :to="{name: 'havayolu-sil', params: {havayolu_id: havayolu.id}}">Sil
+              </router-link>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
+
+
+  <template id="havayolu-kaydet">
+    <div>
+      <h2>Yeni Havayolu Ekle</h2>
+      <form @submit="kaydetHavayolu">
+        <div class="form-group">
+          <label for="ekle-kod">Uçuş Kodu</label>
+          <input class="form-control" id="ekle-kod" v-model="havayolu.ucusKodu" required/>
+        </div>
+        <div class="form-group">
+          <label for="ekle-ad">Adı</label>
+          <input class="form-control" id="ekle-ad" v-model="havayolu.adi" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <template id="havayolu-duzenle">
+    <div>
+      <h2>Düzenle</h2>
+      <form @submit="kaydetHavayolu">
+        <div class="form-group">
+          <label for="duzenle-kod">Uçuş Kodu</label>
+          <input class="form-control" id="duzenle-kod" v-model="havayolu.ucusKodu" required/>
+        </div>
+        <div class="form-group">
+          <label for="duzenle-ad">Adı</label>
+          <input class="form-control" id="duzenle-ad" v-model="havayolu.adi" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <template id="havayolu-sil">
+    <div>
+      <h2>{{ havayolu.adi }} havayolunu silmek istediğinizden emin misiniz?</h2>
+      <form @submit="silHavayolu">
+        <p>Bu işlem geri alınamaz</p>
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <script src="https://unpkg.com/vue@2.5.22/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.2/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+          integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+          crossorigin="anonymous"></script>
+  <script src="/js/havayolu.js"></script>
+
+</body>
+</html>

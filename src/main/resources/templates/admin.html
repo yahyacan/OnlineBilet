@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Havalimanı Yönetimi</title>
+    <link href="https://unpkg.com/bootstrap@3.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>Yönetici Paneli</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <!--          <li class="active">-->
+                <!--            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>-->
+                <!--            <ul class="collapse list-unstyled" id="homeSubmenu">-->
+                <!--              <li>-->
+                <!--                <a href="#">Home 1</a>-->
+                <!--              </li>-->
+                <!--              <li>-->
+                <!--                <a href="#">Home 2</a>-->
+                <!--              </li>-->
+                <!--              <li>-->
+                <!--                <a href="#">Home 3</a>-->
+                <!--              </li>-->
+                <!--            </ul>-->
+                <!--          </li>-->
+                <li>
+                    <a href="/havalimani">Havalimanı</a>
+                </li>
+                <li>
+                    <a href="/havayolu">Havayolu</a>
+                </li>
+                <li>
+                    <a href="/rota">Rota</a>
+                </li>
+                <li>
+                    <a href="/ucus">Uçuş</a>
+                </li>
+                <li>
+                    <a href="/rezervasyon">Rezervasyon</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+            <main id="app">
+                <router-view></router-view>
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <script src="https://unpkg.com/vue@2.5.22/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@3.0.2/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+            integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+            crossorigin="anonymous"></script>
+    <script src="/js/havalimani.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Uçuş Yönetimi</title>
+  <link href="https://unpkg.com/bootstrap@3.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+  <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>Yönetici Paneli</h3>
+      </div>
+
+      <ul class="list-unstyled components">
+        <li>
+          <a href="/havalimani">Havalimanı</a>
+        </li>
+        <li>
+          <a href="/havayolu">Havayolu</a>
+        </li>
+        <li>
+          <a href="/rota">Rota</a>
+        </li>
+        <li>
+          <a href="/ucus">Uçuş</a>
+        </li>
+        <li>
+          <a href="/rezervasyon">Rezervasyon</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content">
+      <main id="app">
+        <router-view></router-view>
+      </main>
+
+    </div>
+
+  </div>
+
+  <template id="ucus">
+    <div>
+      <b>Uçuş No: </b>
+      <h2>{{ ucus.ucusNo }}</h2>
+      <b>Rota: </b>
+      <div>{{ ucus.rota.nereden.adi }} - {{ ucus.rota.nereye.adi }}</div>
+      <b>Uçuş Tarihi:</b>
+      <div><format :value="ucus.ucusTarihi" fn="dateFormat" /></div>
+      <b>Fiyat:</b>
+      <div>{{ ucus.fiyat }} {{ ucus.paraBirimi }}</div>
+      <b>Koltuk Sayısı:</b>
+      <div>{{ ucus.koltukSayisi }}</div>
+      <br/>
+      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+      <a>
+        <router-link to="/">Geri Dön</router-link>
+      </a>
+    </div>
+  </template>
+
+  <template id="ucus-list">
+    <div>
+      <div class="actions">
+        <a class="btn btn-default">
+          <router-link :to="{path: '/ucus-kaydet'}">
+            <span class="glyphicon glyphicon-plus"></span>
+            Ucus Ekle
+          </router-link>
+        </a>
+      </div>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Uçuş No</th>
+          <th>Rota</th>
+          <th>Uçuş Tarihi</th>
+          <th>Fiyat</th>
+          <th>Koltuk Sayısı</th>
+          <th class="col-sm-2">İşlemler</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="ucus in ucusListesi">
+          <td>
+            <a>
+              <router-link :to="{name: 'ucus', params: {ucus_id: ucus.id}}">{{
+                ucus.ucusNo }}
+              </router-link>
+            </a>
+          </td>
+          <td>{{ ucus.rota.nereden.adi }} - {{ ucus.rota.nereye.adi }}</td>
+          <td><format :value="ucus.ucusTarihi" fn="dateFormat" /></td>
+          <td>{{ ucus.fiyat }} {{ ucus.paraBirimi }}</td>
+          <td>{{ ucus.koltukSayisi }}</td>
+          <td>
+            <a class="btn btn-warning btn-xs">
+              <router-link :to="{name: 'ucus-duzenle', params: {ucus_id: ucus.id}}">
+                Düzenle
+              </router-link>
+            </a>
+            <a class="btn btn-danger btn-xs">
+              <router-link :to="{name: 'ucus-sil', params: {ucus_id: ucus.id}}">Sil
+              </router-link>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
+
+
+  <template id="ucus-kaydet">
+    <div>
+      <h2>Yeni Uçuş Ekle</h2>
+      <form @submit="kaydetUcus">
+        <div class="form-group">
+          <label>Rota</label>
+          <select class="form-control" v-model="ucus.rota">
+            <option v-for="rota in rotaListesi" v-bind:value="rota">
+              {{ rota.havayolu.adi }} / {{ rota.nereden.adi }} - {{ rota.nereye.adi }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Uçuş Tarihi</label>
+          <input class="form-control" type="datetime-local" v-model="ucus.ucusTarihi"/>
+        </div>
+        <div class="form-group">
+          <label>Fiyat</label>
+          <input class="form-control" v-model.number="ucus.fiyat" type="number"/>
+        </div>
+        <div class="form-group">
+          <label>Para Birimi</label>
+          <select class="form-control" v-model="ucus.paraBirimi">
+            <option v-for="paraBirimi in paraBirimiListesi" v-bind:value="paraBirimi">{{ paraBirimi }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Koltuk Sayısı</label>
+          <input class="form-control" v-model.number="ucus.koltukSayisi" type="number"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <template id="ucus-duzenle">
+    <div>
+      <h2>Düzenle</h2>
+      <form @submit="kaydetUcus">
+        <div class="form-group">
+          <label>Rota</label>
+          <select class="form-control" v-model="ucus.rota">
+            <option v-for="rota in rotaListesi" v-bind:value="rota">
+              {{ rota.nereden.adi }} - {{ rota.nereye.adi }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Uçuş Tarihi</label>
+          <input class="form-control" type="datetime-local" v-model="ucus.ucusTarihi"/>
+        </div>
+        <div class="form-group">
+          <label>Fiyat</label>
+          <input class="form-control" v-model.number="ucus.fiyat" type="number"/>
+        </div>
+        <div class="form-group">
+          <label>Para Birimi</label>
+          <select class="form-control" v-model="ucus.paraBirimi">
+            <option>TRY</option>
+            <option>USD</option>
+            <option>EUR</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Koltuk Sayısı</label>
+          <input class="form-control" v-model.number="ucus.koltukSayisi" type="number"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <template id="ucus-sil">
+    <div>
+      <h2>{{ ucus.ucusNo }} nolu uçuşu silmek istediğinizden emin misiniz?</h2>
+      <form @submit="silUcus">
+        <p>Bu işlem geri alınamaz</p>
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <script src="https://unpkg.com/vue@2.5.22/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.2/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+          integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+          crossorigin="anonymous"></script>
+  <script src="/js/ucus.js"></script>
+</div>
+</body>
+</html>

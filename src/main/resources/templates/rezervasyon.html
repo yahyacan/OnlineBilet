@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Havalimanı Yönetimi</title>
+  <link href="https://unpkg.com/bootstrap@3.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+  <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>Yönetici Paneli</h3>
+      </div>
+
+      <ul class="list-unstyled components">
+        <li>
+          <a href="/havalimani">Havalimanı</a>
+        </li>
+        <li>
+          <a href="/havayolu">Havayolu</a>
+        </li>
+        <li>
+          <a href="/rota">Rota</a>
+        </li>
+        <li>
+          <a href="/ucus">Uçuş</a>
+        </li>
+        <li>
+          <a href="/rezervasyon">Rezervasyon</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content">
+      <main id="app">
+        <router-view></router-view>
+      </main>
+
+    </div>
+
+  </div>
+
+  <template id="rezervasyon">
+    <div>
+      <b>PNR No: </b>
+      <h2>{{ rezervasyon.pnrNo }}</h2>
+      <b>Havayolu: </b>
+      <div>{{ rezervasyon.ucus.rota.havayolu.adi }}</div>
+      <b>Nereden:</b>
+      <div>{{ rezervasyon.ucus.rota.nereden.adi }}</div>
+      <b>Nereye:</b>
+      <div>{{ rezervasyon.ucus.rota.nereye.adi }}</div>
+      <b>Uçuş Tarihi:</b>
+      <div><format :value="rezervasyon.ucus.ucusTarihi" fn="dateFormat" /></div>
+      <b>Rezervasyon Tarihi:</b>
+      <div><format :value="rezervasyon.createdAt" fn="dateFormat" /></div>
+      <br/>
+      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+      <a>
+        <router-link to="/">Geri Dön</router-link>
+      </a>
+    </div>
+  </template>
+
+  <template id="rezervasyon-list">
+    <div>
+      <div class="filters row">
+        <div class="form-group col-sm-3">
+          <input placeholder="Arama" v-model="aramaAnahtari" class="form-control" id="search-element"
+                 requred/>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>PNR No</th>
+          <th>Müşteri</th>
+          <th>Rota</th>
+          <th>Uçuş No</th>
+          <th>Uçuş Tarihi</th>
+          <th>Rezervasyon Tarihi</th>
+          <th class="col-sm-2">İşlemler</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="rezervasyon in filtreleRezervasyon">
+          <td>
+            <a>
+              <router-link :to="{name: 'rezervasyon', params: {rezervasyon_id: rezervasyon.id}}">{{
+                rezervasyon.pnrNo }}
+              </router-link>
+            </a>
+          </td>
+          <td>{{ rezervasyon.musteri.adi }} {{ rezervasyon.musteri.soyadi }}</td>
+          <td>{{ rezervasyon.ucus.rota.nereden.adi }} -> {{ rezervasyon.ucus.rota.nereye.adi }}</td>
+          <td>{{ rezervasyon.ucus.ucusNo }}</td>
+          <td><format :value="rezervasyon.ucus.ucusTarihi" fn="dateFormat" /></td>
+          <td><format :value="rezervasyon.createdAt" fn="dateFormat" /></td>
+          <td>
+            <a class="btn btn-danger btn-xs">
+              <router-link :to="{name: 'rezervasyon-sil', params: {rezervasyon_id: rezervasyon.id}}">Sil
+              </router-link>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
+
+  <template id="rezervasyon-sil">
+    <div>
+      <h2>{{ rezervasyon.pnrNo }} nolu rezervasyonu silmek istediğinizden emin misiniz?</h2>
+      <form @submit="silRezervasyon">
+        <p>Bu işlem geri alınamaz</p>
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a class="btn btn-default">
+          <router-link to="/">İptal</router-link>
+        </a>
+      </form>
+    </div>
+  </template>
+
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <script src="https://unpkg.com/vue@2.5.22/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.2/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+          integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+          crossorigin="anonymous"></script>
+  <script src="/js/rezervasyon.js"></script>
+
+</body>
+</html>
